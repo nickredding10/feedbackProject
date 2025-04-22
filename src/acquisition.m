@@ -22,7 +22,7 @@ for prn = param.PRN
     out.PRN(p_idx) = prn;
 end
 figure
-bar(1:32,peakSize);
+bar(param.PRN,peakSize);
 title('Acquisition Results','FontSize',13)
 xlabel('PRN #','FontSize',13)
 ylabel('Correlation Strength','FontSize',13)

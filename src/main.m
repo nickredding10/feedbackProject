@@ -19,4 +19,30 @@ clear;clc;close all;
     acqRes = acquisition(sigData,param);
     
 %% Perform Tracking
-    trackRes = tracking(sigData,param);
+    trackRes = tracking(sigData,param,acqRes);
+
+    prnI = 0;
+    for prn = param.PRN
+        prnI = prnI + 1;
+       
+        figure
+        subplot(2,2,[1 2])
+        %figure
+        plot(trackRes(prnI).I_P,'.')
+        hold on
+        plot(trackRes(prnI).Q_P,'.')
+        tit = sprintf('PRN %.02d',prn);
+        title(tit,'FontSize',13)
+        legend('IP','QP','FontSize',13)
+        
+        subplot(2,2,3)
+        %figure
+        plot(trackRes(prnI).codeFreq)
+        title('Code Frequency')
+        subplot(2,2,4)
+        %figure
+        plot(trackRes(prnI).carrFreq)
+        title('Carrier Frequency')
+    end
+
+%% Position 
