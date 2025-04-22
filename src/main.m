@@ -16,6 +16,7 @@ clear;clc;close all;
 %% Perform Acquisition
     % Input: Integration Period
     % Output: Doppler, Code Shift
-    acqResults = acquisition(sigData,param);
+    acqRes = acquisition(sigData,param);
     
 %% Perform Tracking
+    trackRes = tracking(sigData,param);
