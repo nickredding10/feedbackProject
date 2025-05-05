@@ -89,6 +89,8 @@ for prn = param.PRN
         PLL_discrim(k) = atan(QP(k)/IP(k))/(2*pi); %In Samples (phase error)  %Costas Discrim
         
         %% INSERT FIRST ORDER PLL
+        if param.PLL_order == 1
+        elseif param.PLL_order == 2
         %% SECOND ORDER PLL
         % Integrate PLL Discriminator
         PLL_discrim_int(k) = PLL_discrim_int(k-1) + PLL_discrim(k)*dt;
@@ -97,6 +99,8 @@ for prn = param.PRN
         %NCO Command
         doppler_shift(k+1) = doppler_shift(1) + pll_err(k);
         phase_shift(k+1) = rem(phi(samplesPerCode+1),(2*pi));
+        elseif param.PLL_order == 3
+        end
         %% INSERT THIRD ORDER PLL
 
         %% FLL

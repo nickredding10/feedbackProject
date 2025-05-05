@@ -1,5 +1,7 @@
 function param = param()
 
+
+param.PLL_order = 2;
     %% File Parsing Parameters 
     param.fileName = 'orens_second_signal.iq';
     %param.quantization = 'float32';
