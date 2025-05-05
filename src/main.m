@@ -7,9 +7,20 @@ clear;clc;close all;
     % File Name
     param = Param;
 
-%% Load Signal File
+    for ff = [1:3]
+        if ff == 1
+        fileName = 'NIck_Elek_SIM_static.iq';
+        elseif ff == 2
+             fileName = 'NIck_Elek_SIM_const_vel.iq';
+        elseif ff == 3
+             fileName = 'NIck_Elek_SIM_high_dynamic.iq';
+        end
+        param.fileName = fileName;
+        %% Load Signal File
     % Input: Parameters, Signal File
     % Output: Signal Data in double
+% do = 1;
+%     if do == 1
     sigData = loadSig(param);
 
 
@@ -44,5 +55,20 @@ clear;clc;close all;
         plot(trackRes(prnI).carrFreq)
         title('Carrier Frequency')
     end
+    end
+    % else
+    %     load('track_res.mat');
+    %     [navSolutions, eph] = navigate(trackRes, param);
+    % end
+
 
 %% Position 
+
+
+%% 2nd Order PLL + 1st Order DLL
+%% 3rd Order PLL + 2nd Order DLL
+
+%% Const. Vel
+%% Const. Acc
+%% Const. Jerk
+
