@@ -1,12 +1,12 @@
 function param = param()
 
 
-param.PLL_order = 2;
+param.PLL_order = 3;
     %% File Parsing Parameters 
     param.fileName = 'orens_second_signal.iq';
     %param.quantization = 'float32';
     param.sampleRate = 12.5e6; % Hz
-    param.msToProcess = 10000; 
+    param.msToProcess = 5000; 
     param.complex = 1; 
     param.dataType = 'int16';
 
@@ -21,8 +21,8 @@ param.PLL_order = 2;
     param.dopBins = [-5000:500:5000];
 
     %% Tracking Parameters
-    param.dllNoiseBandwidth = 3;
+    param.dllNoiseBandwidth = 3; %3 %9
     param.pllNoiseBandwidth = 18;
-    param.dllCorrelatorSpacing = 0.5;
+    param.dllCorrelatorSpacing = 0.5; %0.5 % 0.8
     param.IF = 0;
 end

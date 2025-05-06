@@ -18,17 +18,20 @@ Wn_PLL = BW_PLL*8*zeta / (4*zeta.^2 + 1);
 PLL_ki = 4*Wn_PLL^2;
 PLL_kp = (2*zeta/Wn_PLL)*PLL_ki;
 
-chipping_rate(1:2) = 1.023e6;
+% loopStart = 2;
+loopStart = 3;
+
+chipping_rate(1:loopStart) = 1.023e6;
 
 prnI = 0;
 for prn = param.PRN
     prnI     = prnI + 1;
-    PLL_discrim_int(1:2) = 0;
-    DLL_discrim_int(1:2) = 0;
-    phase_shift(1:2) = 0;
-    pll_err(1:2) = 0;
+    PLL_discrim_int(1:loopStart) = 0;
+    DLL_discrim_int(1:loopStart) = 0;
+    phase_shift(1:loopStart) = 0;
+    pll_err(1:loopStart) = 0;
     remCode = 0;
-    doppler_shift(1:2) = acqRes.acqDop(prnI) - f_IF;
+    doppler_shift(1:loopStart) = acqRes.acqDop(prnI) - f_IF;
     acqCodePhase = acqRes.acqTau(prnI);
     accumulate = acqCodePhase;
 
@@ -39,7 +42,7 @@ for prn = param.PRN
     ca = [ca(end) ca ca];
     %% Parse sigData
 
-    for k = 2:codePeriods-1
+    for k = loopStart:codePeriods-1 % start at 2
         samplesPerChip = param.sampleRate/chipping_rate(k);
         samplesPerCode = ceil((codeLength-remCode)*samplesPerChip);
         rawSignal = sigData(accumulate:accumulate+samplesPerCode-1);
@@ -90,16 +93,29 @@ for prn = param.PRN
         
         %% INSERT FIRST ORDER PLL
         if param.PLL_order == 1
+            % don't need to skip any samples
+            doppler_shift(k+1) = filter.pll_1(PLL_discrim(k));
+            doppler_shift(k+1) = doppler_shift(1) + doppler_shift(k+1);
+            phase_shift(k+1) = rem(phi(samplesPerCode+1),(2*pi));
         elseif param.PLL_order == 2
         %% SECOND ORDER PLL
-        % Integrate PLL Discriminator
-        PLL_discrim_int(k) = PLL_discrim_int(k-1) + PLL_discrim(k)*dt;
-        % Apply Loop Filter (Controller Plant)
-        pll_err(k) = PLL_kp*PLL_discrim(k) + PLL_ki*PLL_discrim_int(k);
-        %NCO Command
-        doppler_shift(k+1) = doppler_shift(1) + pll_err(k);
-        phase_shift(k+1) = rem(phi(samplesPerCode+1),(2*pi));
+            % Original PI COntroller Approximation
+            % % Integrate PLL Discriminator
+            % PLL_discrim_int(k) = PLL_discrim_int(k-1) + PLL_discrim(k)*dt;
+            % % Apply Loop Filter (Controller Plant)
+            % pll_err(k) = PLL_kp*PLL_discrim(k) + PLL_ki*PLL_discrim_int(k);
+            % %NCO Command
+            % doppler_shift(k+1) = doppler_shift(1) + pll_err(k);
+            % phase_shift(k+1) = rem(phi(samplesPerCode+1),(2*pi));
+    
+            % Discrete PI COntroller
+            doppler_shift(k+1) = filter.pll_2(doppler_shift(k), PLL_discrim(k), PLL_discrim(k-1), dt);
+            phase_shift(k+1) = rem(phi(samplesPerCode+1),(2*pi));
         elseif param.PLL_order == 3
+            doppler_shift(k+1) = filter.pll_3(doppler_shift(k), ...
+                doppler_shift(k-1), PLL_discrim(k), PLL_discrim(k-1), ...
+                PLL_discrim(k-2), dt);
+            phase_shift(k+1) = rem(phi(samplesPerCode+1),(2*pi));
         end
         %% INSERT THIRD ORDER PLL
 
