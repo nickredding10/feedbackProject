@@ -6,7 +6,7 @@ param.PLL_order = 3;
     param.fileName = 'orens_second_signal.iq';
     %param.quantization = 'float32';
     param.sampleRate = 12.5e6; % Hz
-    param.msToProcess = 5000; 
+    param.msToProcess = 60000; 
     param.complex = 1; 
     param.dataType = 'int16';
 

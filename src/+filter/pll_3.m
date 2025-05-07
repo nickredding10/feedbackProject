@@ -17,7 +17,7 @@ w_n = 4*(a*b - 1)*B_n / (a*b^2 + a^2 - b); % Loop FIlter Natural Frequency [Hz]
 %         2*((1/4)*T^2*w_n^3 - b*w_n)*disc_pll_prev + ...
 %         (b*w_n - (T/2)*a*w_n^2 + (1/4)*T^2*w_n^3)*disc_pll_prev2;
 
-% zeta=0.707 ans ts=0.03s
+% zeta=0.707 and ts=0.03s
 p = conv([1 750],[1 2*0.707*216.88 216.88^2]);
 
 f_nco = 2*f_nco_prev - f_nco_prev2 + ...

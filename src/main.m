@@ -30,6 +30,8 @@ clear;clc;close all;
     acqRes = acquisition(sigData,param);
     
 %% Perform Tracking
+    dt = 1e-3; 
+    t = dt:dt:param.msToProcess * dt;
     trackRes = tracking(sigData,param,acqRes);
 
     prnI = 0;
@@ -39,20 +41,21 @@ clear;clc;close all;
         figure
         subplot(2,2,[1 2])
         %figure
-        plot(trackRes(prnI).I_P,'.')
+        plot(t(1:end-1),trackRes(prnI).I_P,'.')
         hold on
-        plot(trackRes(prnI).Q_P,'.')
+        plot(t(1:end-1),trackRes(prnI).Q_P,'.')
         tit = sprintf('PRN %.02d',prn);
         title(tit,'FontSize',13)
         legend('IP','QP','FontSize',13)
         
-        subplot(2,2,3)
+        % subplot(2,2,3)
+        % %figure
+        % plot(trackRes(prnI).codeFreq)
+        % title('Code Frequency')
+        subplot(2,2,[3 4])
         %figure
-        plot(trackRes(prnI).codeFreq)
-        title('Code Frequency')
-        subplot(2,2,4)
-        %figure
-        plot(trackRes(prnI).carrFreq)
+        plot(t,trackRes(prnI).carrFreq)
+        xlabel('Time [s]')
         title('Carrier Frequency')
     end
     end
